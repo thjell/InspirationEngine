@@ -161,11 +161,39 @@
 }
 
 .ie-widget-shell.expanded .ie-widget-badge {
-  animation: none;
+  animation: ie-idle-rotation 25s linear infinite;
+  cursor: pointer;
+}
+
+.ie-widget-shell.expanded.is-anchored {
+  align-items: flex-start;
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
+}
+
+.ie-widget-shell.expanded.is-anchored .ie-widget-card {
+  margin-top: var(--ie-modal-top);
+  margin-bottom: 24px;
+  flex-shrink: 0;
+  transition: none;
+}
+
+.ie-widget-shell.expanded .ie-widget-header,
+.ie-widget-shell.expanded .ie-widget-body {
+  flex-shrink: 0;
+}
+
+.ie-widget-shell.expanded .ie-widget-status {
+  height: 18px;
+}
+
+.ie-widget-shell.expanded .ie-widget-body {
+  min-height: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ie-widget-shell.collapsed .ie-widget-badge,
+  .ie-widget-shell.expanded .ie-widget-badge,
   .ie-widget-wheel-label {
     animation: none !important;
   }

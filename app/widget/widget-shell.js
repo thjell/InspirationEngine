@@ -132,6 +132,9 @@ export function createWidgetShell({
   const toggleButton = shell.querySelector(".ie-widget-toggle");
   const header = shell.querySelector(".ie-widget-header");
   const spinButton = shell.querySelector(".ie-widget-cta");
+  const wheel = shell.querySelector(".ie-widget-badge");
+  const body = shell.querySelector(".ie-widget-body");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const statusText = shell.querySelector(".ie-widget-status");
   const resultsContainer = shell.querySelector(".ie-widget-results");
   const featuredImage = shell.querySelector(".ie-widget-result-image");
@@ -150,6 +153,59 @@ export function createWidgetShell({
   let selectedBudget = initialBudget;
   let widgetState = "initial";
   let storedScrollY = 0;
+  let spinAnimation = null;
+  let spinTimer = null;
+  let transitionVersion = 0;
+  let isTransitioning = false;
+
+  // Measure the new content inside the existing composition, then grow/shrink it.
+  const transitionView = async (update) => {
+    const version = ++transitionVersion;
+    isTransitioning = true;
+    const oldHeight = body.getBoundingClientRect().height;
+    if (!reducedMotion.matches) {
+      await body.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 140, fill: "forwards"
+      }).finished.catch(() => {});
+    }
+    if (version !== transitionVersion) return;
+    update();
+    const newHeight = body.getBoundingClientRect().height;
+    body.getAnimations().forEach((animation) => animation.cancel());
+    if (!reducedMotion.matches) {
+      body.style.clipPath = "inset(-10px -50px 0)";
+      const resize = body.animate([
+        { height: `${oldHeight}px` }, { height: `${newHeight}px` }
+      ], { duration: 420, easing: "cubic-bezier(.22, 1, .36, 1)" });
+      body.animate([
+        { opacity: 0, transform: "translateY(6px)" },
+        { opacity: 1, transform: "translateY(0)" }
+      ], { duration: 320, delay: 100, fill: "backwards", easing: "ease-out" });
+      await resize.finished.catch(() => {});
+    }
+    if (version !== transitionVersion) return;
+    body.style.clipPath = "";
+    isTransitioning = false;
+  };
+
+  const resumeIdleRotation = () => {
+    const angle = Number(wheel.dataset.angle || 0);
+    wheel.style.animationName = "none";
+    wheel.style.animationDelay = `${-angle / 360 * 25}s`;
+    // Restart the idle clock at the landing angle before releasing the spin.
+    void wheel.offsetWidth;
+    wheel.style.animationName = "";
+    spinAnimation?.cancel();
+    spinAnimation = null;
+  };
+
+  const returnToFilters = () => {
+    if (isTransitioning || widgetState === "spinning") return;
+    transitionView(() => {
+      resetToInitialState();
+      resumeIdleRotation();
+    });
+  };
 
   const formatPrice = (value) => new Intl.NumberFormat("no-NO").format(value);
 
@@ -266,11 +322,11 @@ export function createWidgetShell({
       featuredSavings.textContent = "";
       featuredLink.textContent = "ENDRE FILTER";
       featuredLink.onclick = () => {
-        resetToInitialState();
+        returnToFilters();
       };
       resetFilterButton.textContent = "ENDRE FILTER";
       resetFilterButton.onclick = () => {
-        resetToInitialState();
+        returnToFilters();
       };
       alternativesContainer.innerHTML = "";
       return;
@@ -297,7 +353,7 @@ export function createWidgetShell({
     };
     resetFilterButton.textContent = "ENDRE FILTER";
     resetFilterButton.onclick = () => {
-      resetToInitialState();
+      returnToFilters();
     };
 
     renderAlternatives(alternatives);
@@ -341,7 +397,12 @@ export function createWidgetShell({
     if (isExpanded) {
       lockBodyScroll();
       resetToInitialState();
+      // Leave room for the result below a stable wheel, including on short screens.
+      shell.style.setProperty("--ie-modal-top", `${Math.max(24, window.innerHeight * 0.06)}px`);
+      shell.classList.add("is-anchored");
     } else {
+      shell.classList.remove("is-anchored");
+      shell.style.removeProperty("--ie-modal-top");
       unlockBodyScroll();
     }
   };
@@ -353,7 +414,13 @@ export function createWidgetShell({
   };
 
   const closeWidget = () => {
+    window.clearTimeout(spinTimer);
+    transitionVersion++;
+    isTransitioning = false;
+    body.getAnimations().forEach((animation) => animation.cancel());
+    body.style.clipPath = "";
     if (shell.classList.contains("expanded")) {
+      resumeIdleRotation();
       setExpanded(false);
     }
     resetToInitialState();
@@ -364,6 +431,8 @@ export function createWidgetShell({
     if (event.target.closest("select")) return;
     if (shell.classList.contains("collapsed")) {
       openWidget();
+    } else if (event.target.closest(".ie-widget-badge") && widgetState !== "spinning") {
+      spinButton.click();
     }
   });
 
@@ -386,19 +455,29 @@ export function createWidgetShell({
   });
 
   spinButton.addEventListener("click", () => {
+    if (widgetState === "spinning" || isTransitioning) return;
+    const matrix = new DOMMatrixReadOnly(getComputedStyle(wheel).transform);
+    const startAngle = Math.atan2(matrix.b, matrix.a) * 180 / Math.PI;
+    const endAngle = startAngle + 150;
+    spinAnimation?.cancel();
+    wheel.dataset.angle = String((endAngle % 360 + 360) % 360);
+    spinAnimation = wheel.animate([
+      { transform: `rotate(${startAngle}deg)` },
+      { transform: `rotate(${endAngle}deg)` }
+    ], {
+      duration: reducedMotion.matches ? 0 : 1800,
+      easing: "cubic-bezier(.3, .052, .35, 1)", fill: "forwards"
+    });
     widgetState = "spinning";
     shell.dataset.state = widgetState;
     shell.classList.add("is-spinning");
-    shell.classList.remove("has-results");
-    resultsContainer.hidden = true;
-    resultsContainer.setAttribute("aria-hidden", "true");
     statusText.textContent = `Sjekker ${selectedInterest.toLowerCase()} • ${selectedBudget}`;
 
     if (typeof onSpin === "function") {
       onSpin({ interest: selectedInterest, budget: selectedBudget });
     }
 
-    window.setTimeout(() => {
+    spinTimer = window.setTimeout(() => {
       const recommendedProducts = findRecommendedProducts({
         interest: selectedInterest,
         budget: selectedBudget
@@ -410,8 +489,8 @@ export function createWidgetShell({
         statusText.textContent = "Prøv et annet budsjett eller Overrask meg";
       }
 
-      showResultView(recommendedProducts);
-    }, 550);
+      transitionView(() => showResultView(recommendedProducts));
+    }, reducedMotion.matches ? 0 : 1900);
   });
 
   resetToInitialState();
