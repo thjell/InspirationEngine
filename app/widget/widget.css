@@ -1,0 +1,348 @@
+:root {
+  --ie-primary: #ff7a00;
+  --ie-primary-dark: #d96a00;
+  --ie-accent: #0f172a;
+  --ie-surface: #f4f6f9;
+  --ie-surface-strong: #e9edf3;
+  --ie-card: #ffffff;
+  --ie-text: #111827;
+  --ie-text-muted: #475569;
+  --ie-border: #dfe7f0;
+  --ie-success: #1f9d61;
+  --ie-warning: #f59e0b;
+  --ie-shadow: rgba(15, 23, 42, 0.12);
+  --ie-radius-widget: 18px;
+  --ie-radius-button: 999px;
+  --ie-radius-card: 16px;
+  --ie-spacing-widget: 16px;
+  --ie-spacing-card: 18px;
+  --ie-spacing-control-gap: 10px;
+  --ie-font-family: Inter, "Segoe UI", sans-serif;
+  --ie-heading-weight: 700;
+  --ie-body-weight: 500;
+  --ie-label-weight: 600;
+}
+
+.ie-widget-shell {
+  position: fixed;
+  right: 18px;
+  bottom: 24px;
+  z-index: 2000;
+  font-family: var(--ie-font-family);
+  color: var(--ie-text);
+  pointer-events: auto;
+}
+
+.ie-widget-card {
+  position: relative;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  transition: all 0.2s ease;
+}
+
+.ie-widget-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.ie-widget-label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.ie-widget-wheel-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: max-content;
+  min-width: 220px;
+  height: auto;
+  padding: 0;
+}
+
+.ie-widget-wheel-label {
+  position: static;
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  color: rgba(17, 24, 39, 0.8);
+  font-size: 15px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  animation: none;
+}
+
+.ie-widget-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 136px;
+  height: 136px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #0f172a 0deg 52deg,
+    #ff7a00 52deg 105deg,
+    #f9c74f 105deg 158deg,
+    #1f2937 158deg 210deg,
+    #ffb703 210deg 263deg,
+    #111827 263deg 315deg,
+    #f59e0b 315deg 360deg
+  );
+  border: 5px solid rgba(255,255,255,0.95);
+  box-shadow: 0 18px 30px rgba(15, 23, 42, 0.18), inset 0 0 0 2px rgba(255,255,255,0.45);
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.ie-widget-badge::before {
+  content: "";
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.17);
+  border: 1px solid rgba(255,255,255,0.28);
+}
+
+.ie-widget-badge::after {
+  content: "SPINN";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.ie-widget-shell.collapsed .ie-widget-badge {
+  animation: ie-idle-rotation 25s linear infinite;
+}
+
+.ie-widget-shell.collapsed .ie-widget-badge:hover,
+.ie-widget-shell.collapsed .ie-widget-badge:focus-visible {
+  animation-play-state: paused;
+}
+
+.ie-widget-shell.expanded .ie-widget-badge {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ie-widget-shell.collapsed .ie-widget-badge,
+  .ie-widget-wheel-label {
+    animation: none !important;
+  }
+}
+
+@keyframes ie-idle-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ie-label-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.ie-widget-body {
+  display: none;
+  margin-top: 12px;
+  width: min(320px, calc(100vw - 28px));
+  padding: 16px;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid var(--ie-border);
+  border-radius: 18px;
+  box-shadow: 0 18px 46px var(--ie-shadow);
+}
+
+.ie-widget-copy {
+  margin: 0;
+  padding: 0 0 10px;
+  color: var(--ie-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.ie-widget-controls {
+  display: grid;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.ie-widget-wheel-preview {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 110px;
+  margin-top: 4px;
+  padding: 6px 0 2px;
+}
+
+.ie-widget-wheel {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 4px solid rgba(15, 23, 42, 0.12);
+  background: conic-gradient(
+    #f9c74f 0deg 36deg,
+    #ff7a00 36deg 72deg,
+    #facc15 72deg 108deg,
+    #111827 108deg 144deg,
+    #fcd34d 144deg 180deg,
+    #ffb703 180deg 216deg,
+    #0f172a 216deg 252deg,
+    #f59e0b 252deg 288deg,
+    #f9c74f 288deg 324deg,
+    #ff7a00 324deg 360deg
+  );
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,0.5), 0 8px 18px rgba(15,23,42,0.09);
+}
+
+.ie-widget-wheel::before {
+  content: "";
+  position: absolute;
+  inset: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.84);
+  border: 2px solid rgba(15, 23, 42, 0.08);
+}
+
+.ie-widget-wheel::after {
+  content: "SPINN";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.42rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ie-accent);
+}
+
+.ie-widget-wheel-pointer {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 16px solid var(--ie-primary);
+  transform: translateY(-3px);
+  filter: drop-shadow(0 3px 4px rgba(15, 23, 42, 0.12));
+}
+
+.ie-widget-field {
+  display: grid;
+  gap: 7px;
+}
+
+.ie-widget-field label {
+  font-size: 0.72rem;
+  font-weight: var(--ie-label-weight);
+  color: var(--ie-text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ie-widget-select {
+  width: 100%;
+  border: 1px solid var(--ie-border);
+  background: var(--ie-surface);
+  color: var(--ie-text);
+  border-radius: 12px;
+  min-height: 42px;
+  padding: 0 12px;
+  font-size: 0.96rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.ie-widget-select:focus {
+  border-color: var(--ie-primary);
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.12);
+}
+
+.ie-widget-cta {
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--ie-radius-button);
+  background: linear-gradient(135deg, var(--ie-primary), var(--ie-primary-dark));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.96rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.ie-widget-cta:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.05);
+}
+
+.ie-widget-status {
+  min-height: 20px;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: var(--ie-text-muted);
+}
+
+.ie-widget-shell.collapsed .ie-widget-body {
+  display: none;
+}
+
+.ie-widget-shell.expanded .ie-widget-body {
+  display: block;
+}
+
+.ie-widget-shell.expanded .ie-widget-card {
+  display: block;
+}
+
+.ie-widget-shell.expanded .ie-widget-header {
+  align-items: flex-start;
+}
+
+@media (max-width: 520px) {
+  .ie-widget-shell {
+    right: 12px;
+    bottom: 12px;
+    width: min(92vw, 340px);
+  }
+}

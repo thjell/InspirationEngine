@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>POWER Demo Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../widget/widget.css" />
+    <link rel="stylesheet" href="./storefront.css" />
+  </head>
+  <body>
+    <div class="storefront-shell">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="brand" aria-label="POWER home">
+            <div class="brand-mark">P</div>
+            <span>POWER</span>
+          </div>
+
+          <nav class="topbar-nav" aria-label="Main navigation">
+            <a href="#">Nyheter</a>
+            <a href="#">Gaming</a>
+            <a href="#">TV & Audio</a>
+            <a href="#">Datamaskiner</a>
+            <a href="#">Mobil</a>
+            <a href="#">Smart Home</a>
+          </nav>
+
+          <div class="topbar-actions">
+            <span class="topbar-pill">Søk</span>
+            <span class="topbar-pill primary">Handlekurv</span>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="page-inner">
+            <div class="hero-card">
+              <div class="hero-copy">
+                <span class="hero-kicker">Ukens kampanjer</span>
+                <h1>Teknologi for hele hjemmet.</h1>
+                <p>
+                  Oppdag smart, prisverdig utstyr til gaming, hjemmeunderholdning, arbeid og hverdag.
+                  Kvalitet og gode tilbud for hver situasjon.
+                </p>
+
+                <div class="hero-actions">
+                  <button class="primary-btn" type="button">Utforsk tilbud</button>
+                  <button class="secondary-btn" type="button">Se mest solgte</button>
+                </div>
+              </div>
+
+              <div class="hero-visual">
+                <div class="device-card" aria-label="Featured product mockup">
+                  <div class="device-screen"></div>
+                  <div class="device-info">
+                    <div>
+                      <div class="device-meta">QLED 55"</div>
+                      <div style="font-weight: 700; margin-top: 6px;">Samsung TV</div>
+                    </div>
+                    <div class="device-price">8 990 kr</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-header">
+            <h2>Dette uken er på salg</h2>
+            <a href="#">Se alle tilbud</a>
+          </div>
+
+          <div class="deal-grid">
+            <article class="product-card">
+              <div class="product-image" aria-hidden="true"></div>
+              <div class="product-body">
+                <span class="product-tag">Gaming</span>
+                <h3>Lenovo Legion Pro 5</h3>
+                <div class="price-row">
+                  <span class="old-price">17 990 kr</span>
+                  <span class="new-price">13 490 kr</span>
+                </div>
+                <div class="saving">Du sparer 4 500 kr</div>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-image" aria-hidden="true"></div>
+              <div class="product-body">
+                <span class="product-tag">TV & Audio</span>
+                <h3>Samsung QLED 65"</h3>
+                <div class="price-row">
+                  <span class="old-price">19 990 kr</span>
+                  <span class="new-price">15 490 kr</span>
+                </div>
+                <div class="saving">Du sparer 4 500 kr</div>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-image" aria-hidden="true"></div>
+              <div class="product-body">
+                <span class="product-tag">Home</span>
+                <h3>Philips Hue Starter Kit</h3>
+                <div class="price-row">
+                  <span class="old-price">2 499 kr</span>
+                  <span class="new-price">1 799 kr</span>
+                </div>
+                <div class="saving">Du sparer 700 kr</div>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-image" aria-hidden="true"></div>
+              <div class="product-body">
+                <span class="product-tag">Mobile</span>
+                <h3>iPhone 15 Pro</h3>
+                <div class="price-row">
+                  <span class="old-price">14 990 kr</span>
+                  <span class="new-price">12 990 kr</span>
+                </div>
+                <div class="saving">Du sparer 2 000 kr</div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="ie-widget-root"></div>
+
+    <script type="module" src="./storefront.js"></script>
+  </body>
+</html>
