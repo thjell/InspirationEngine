@@ -1,4 +1,5 @@
 import { applyThemeVariables, themeConfig } from "../../src/theme/themeConfig.js";
+import { findRecommendedProducts } from "./products.js";
 
 export function createWidgetShell({
   target = document.body,
@@ -93,6 +94,33 @@ export function createWidgetShell({
         <button class="ie-widget-cta" type="button">SPINN</button>
       </div>
       <div class="ie-widget-status" aria-live="polite"></div>
+
+      <div class="ie-widget-results" hidden aria-live="polite">
+        <div class="ie-widget-results-header">Anbefalt for deg</div>
+
+        <div class="ie-widget-result-featured">
+          <img class="ie-widget-result-image" alt="" />
+          <div class="ie-widget-result-copy">
+            <div class="ie-widget-result-kicker">Anbefalt for deg</div>
+            <h3 class="ie-widget-result-name"></h3>
+            <p class="ie-widget-result-description"></p>
+            <div class="ie-widget-price-row">
+              <span class="ie-widget-old-price"></span>
+              <span class="ie-widget-new-price"></span>
+            </div>
+            <div class="ie-widget-result-savings"></div>
+            <div class="ie-widget-result-actions">
+              <button class="ie-widget-result-link" type="button">SE PRODUKT</button>
+              <button class="ie-widget-reset-link" type="button">ENDRE FILTER</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ie-widget-alternatives-wrapper">
+          <div class="ie-widget-alternatives-title">Andre forslag</div>
+          <div class="ie-widget-alternatives"></div>
+        </div>
+      </div>
     </div>
   `;
 
@@ -105,11 +133,175 @@ export function createWidgetShell({
   const header = shell.querySelector(".ie-widget-header");
   const spinButton = shell.querySelector(".ie-widget-cta");
   const statusText = shell.querySelector(".ie-widget-status");
+  const resultsContainer = shell.querySelector(".ie-widget-results");
+  const featuredImage = shell.querySelector(".ie-widget-result-image");
+  const featuredName = shell.querySelector(".ie-widget-result-name");
+  const featuredDescription = shell.querySelector(".ie-widget-result-description");
+  const featuredOldPrice = shell.querySelector(".ie-widget-old-price");
+  const featuredNewPrice = shell.querySelector(".ie-widget-new-price");
+  const featuredSavings = shell.querySelector(".ie-widget-result-savings");
+  const featuredLink = shell.querySelector(".ie-widget-result-link");
+  const resetFilterButton = shell.querySelector(".ie-widget-reset-link");
+  const alternativesContainer = shell.querySelector(".ie-widget-alternatives");
   const interestChips = shell.querySelectorAll(".ie-widget-chip[data-group='interest']");
   const budgetChips = shell.querySelectorAll(".ie-widget-chip[data-group='budget']");
 
   let selectedInterest = initialInterest;
   let selectedBudget = initialBudget;
+  let widgetState = "initial";
+  let storedScrollY = 0;
+
+  const formatPrice = (value) => new Intl.NumberFormat("no-NO").format(value);
+
+  const lockBodyScroll = () => {
+    storedScrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${storedScrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+    document.body.classList.add("ie-modal-open");
+  };
+
+  const unlockBodyScroll = () => {
+    const restoredScrollY = Number.parseFloat(document.body.style.top || "0") * -1 || storedScrollY || 0;
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.width = "";
+    document.body.style.overflow = "";
+    document.body.style.touchAction = "";
+    document.body.classList.remove("ie-modal-open");
+    window.scrollTo(0, restoredScrollY);
+  };
+
+  const resetToInitialState = () => {
+    widgetState = "initial";
+    shell.dataset.state = widgetState;
+    shell.classList.remove("has-results");
+    shell.classList.remove("is-spinning");
+    resultsContainer.hidden = true;
+    resultsContainer.setAttribute("aria-hidden", "true");
+    statusText.textContent = "";
+    featuredImage.src = "";
+    featuredImage.alt = "";
+    featuredName.textContent = "";
+    featuredDescription.textContent = "";
+    featuredOldPrice.textContent = "";
+    featuredNewPrice.textContent = "";
+    featuredSavings.textContent = "";
+    featuredLink.textContent = "SE PRODUKT";
+    featuredLink.onclick = null;
+    resetFilterButton.onclick = null;
+    alternativesContainer.innerHTML = "";
+  };
+
+  const hideResultView = () => {
+    widgetState = "initial";
+    shell.dataset.state = widgetState;
+    shell.classList.remove("has-results");
+    shell.classList.remove("is-spinning");
+    resultsContainer.hidden = true;
+    resultsContainer.setAttribute("aria-hidden", "true");
+    statusText.textContent = "";
+    featuredImage.src = "";
+    featuredImage.alt = "";
+    featuredName.textContent = "";
+    featuredDescription.textContent = "";
+    featuredOldPrice.textContent = "";
+    featuredNewPrice.textContent = "";
+    featuredSavings.textContent = "";
+    featuredLink.textContent = "SE PRODUKT";
+    featuredLink.onclick = null;
+    resetFilterButton.onclick = null;
+    alternativesContainer.innerHTML = "";
+  };
+
+  const renderAlternatives = (items) => {
+    if (!items.length) {
+      alternativesContainer.innerHTML = "";
+      return;
+    }
+
+    const cards = items.slice(0, 3).map((product) => `
+      <button type="button" class="ie-widget-alt-card" data-product-url="${product.productUrl}">
+        <img src="${product.image}" alt="${product.name}" />
+        <div class="ie-widget-alt-copy">
+          <span class="ie-widget-alt-name">${product.name}</span>
+          <strong>${formatPrice(product.price)} kr</strong>
+        </div>
+      </button>
+    `).join("");
+
+    alternativesContainer.innerHTML = cards;
+    alternativesContainer.querySelectorAll(".ie-widget-alt-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        const url = card.dataset.productUrl;
+        if (url) {
+          window.open(url, "_blank", "noopener,noreferrer");
+        }
+      });
+    });
+  };
+
+  const showResultView = (products) => {
+    widgetState = "result";
+    shell.dataset.state = widgetState;
+    shell.classList.remove("is-spinning");
+
+    if (!products.length) {
+      shell.classList.add("has-results");
+      resultsContainer.hidden = false;
+      resultsContainer.removeAttribute("aria-hidden");
+      resultsContainer.querySelector(".ie-widget-results-header").textContent = "Ingen treff";
+      featuredImage.src = "";
+      featuredImage.alt = "";
+      featuredName.textContent = "Ingen produkter matcher akkurat nå";
+      featuredDescription.textContent = "Prøv et annet budsjett eller velg Overrask meg for flere forslag.";
+      featuredOldPrice.textContent = "";
+      featuredNewPrice.textContent = "";
+      featuredSavings.textContent = "";
+      featuredLink.textContent = "ENDRE FILTER";
+      featuredLink.onclick = () => {
+        resetToInitialState();
+      };
+      resetFilterButton.textContent = "ENDRE FILTER";
+      resetFilterButton.onclick = () => {
+        resetToInitialState();
+      };
+      alternativesContainer.innerHTML = "";
+      return;
+    }
+
+    const [recommended, ...alternatives] = products;
+
+    shell.classList.add("has-results");
+    resultsContainer.hidden = false;
+    resultsContainer.removeAttribute("aria-hidden");
+    resultsContainer.querySelector(".ie-widget-results-header").textContent = "Anbefalt for deg";
+    featuredImage.src = recommended.image;
+    featuredImage.alt = recommended.name;
+    featuredName.textContent = recommended.name;
+    featuredDescription.textContent = recommended.description;
+    featuredOldPrice.textContent = `${formatPrice(recommended.oldPrice)} kr`;
+    featuredNewPrice.textContent = `${formatPrice(recommended.price)} kr`;
+    featuredSavings.textContent = `Du sparer ${formatPrice(recommended.oldPrice - recommended.price)} kr`;
+    featuredLink.textContent = "GÅ TIL PRODUKT";
+    featuredLink.onclick = () => {
+      if (recommended.productUrl) {
+        window.open(recommended.productUrl, "_blank", "noopener,noreferrer");
+      }
+    };
+    resetFilterButton.textContent = "ENDRE FILTER";
+    resetFilterButton.onclick = () => {
+      resetToInitialState();
+    };
+
+    renderAlternatives(alternatives);
+  };
 
   const applyChipSelection = (group, value) => {
     const collection = group === "interest" ? interestChips : budgetChips;
@@ -146,6 +338,12 @@ export function createWidgetShell({
     if (toggleButton) {
       toggleButton.setAttribute("aria-expanded", String(isExpanded));
     }
+    if (isExpanded) {
+      lockBodyScroll();
+      resetToInitialState();
+    } else {
+      unlockBodyScroll();
+    }
   };
 
   const openWidget = () => {
@@ -158,6 +356,7 @@ export function createWidgetShell({
     if (shell.classList.contains("expanded")) {
       setExpanded(false);
     }
+    resetToInitialState();
   };
 
   header.addEventListener("click", (event) => {
@@ -187,13 +386,35 @@ export function createWidgetShell({
   });
 
   spinButton.addEventListener("click", () => {
-    statusText.textContent = `${selectedInterest} • ${selectedBudget}`;
+    widgetState = "spinning";
+    shell.dataset.state = widgetState;
+    shell.classList.add("is-spinning");
+    shell.classList.remove("has-results");
+    resultsContainer.hidden = true;
+    resultsContainer.setAttribute("aria-hidden", "true");
+    statusText.textContent = `Sjekker ${selectedInterest.toLowerCase()} • ${selectedBudget}`;
 
     if (typeof onSpin === "function") {
       onSpin({ interest: selectedInterest, budget: selectedBudget });
     }
+
+    window.setTimeout(() => {
+      const recommendedProducts = findRecommendedProducts({
+        interest: selectedInterest,
+        budget: selectedBudget
+      });
+
+      if (recommendedProducts.length) {
+        statusText.textContent = `${recommendedProducts.length} forslag funnet`;
+      } else {
+        statusText.textContent = "Prøv et annet budsjett eller Overrask meg";
+      }
+
+      showResultView(recommendedProducts);
+    }, 550);
   });
 
+  resetToInitialState();
   setExpanded(false);
 
   return shell;
