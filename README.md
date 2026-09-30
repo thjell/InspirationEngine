@@ -3,7 +3,7 @@
 A white-label B2B SaaS prototype for interactive product discovery.
 
 ## Current demo
-POWER-style retailer storefront integration.
+POWER-inspired retailer storefront demo.
 
 ## Architecture
 - Demo storefront
