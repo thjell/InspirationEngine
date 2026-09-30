@@ -31,6 +31,7 @@
   font-family: var(--ie-font-family);
   color: var(--ie-text);
   pointer-events: auto;
+  transform: translateY(10px);
 }
 
 .ie-widget-card {
@@ -71,6 +72,7 @@
   height: 170px;
   overflow: visible;
   padding: 0;
+  z-index: 1;
 }
 
 .ie-widget-wheel-label {
@@ -82,7 +84,10 @@
   transform: translateX(-50%);
   overflow: visible;
   pointer-events: none;
-  z-index: 3;
+  z-index: 12;
+  opacity: 1;
+  visibility: visible;
+  display: block;
 }
 
 .ie-widget-wheel-label text {
@@ -91,8 +96,8 @@
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  stroke: #ffffff;
-  stroke-width: 2;
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 3;
   paint-order: stroke fill;
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.12));
 }
@@ -118,7 +123,7 @@
   box-shadow: 0 18px 30px rgba(15, 23, 42, 0.18), inset 0 0 0 2px rgba(255,255,255,0.45);
   flex-shrink: 0;
   transition: transform 0.25s ease;
-  z-index: 1;
+  z-index: 2;
 }
 
 .ie-widget-badge::before {
@@ -236,7 +241,7 @@
   border: 1px solid rgba(15, 23, 42, 0.05);
   box-shadow: 0 34px 72px rgba(15, 23, 42, 0.16), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -18px 28px rgba(255,255,255,0.1), inset 0 18px 20px rgba(255,255,255,0.45);
   transition: all 0.25s ease;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .ie-widget-shell.expanded .ie-widget-card::before {
@@ -280,11 +285,16 @@
   top: 18px;
   width: 420px;
   height: 190px;
+  opacity: 1;
+  z-index: 6;
 }
 
 .ie-widget-shell.expanded .ie-widget-wheel-label text {
   font-size: 20px;
   letter-spacing: 0.16em;
+  fill: rgba(15, 23, 42, 0.93);
+  stroke: rgba(255, 255, 255, 0.92);
+  stroke-width: 4;
 }
 
 .ie-widget-shell.expanded .ie-widget-badge {
