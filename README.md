@@ -1,31 +1,31 @@
-GROUP2
-# APP200V – Movie Wheel Application
+# Inspiration Engine
 
-## Requirements
-- VS Code
-- Live Server extension
+A white-label B2B SaaS prototype for interactive product discovery.
 
-## Running the Application
+## Current demo
+POWER-style retailer storefront integration.
 
-1. Open the project folder in VS Code.
+## Architecture
+- Demo storefront
+- Embeddable Inspiration Engine widget
+- Theme configuration layer
 
-2. Open index.html.
+## Features
+- interactive inspiration wheel
+- configurable customer experience
+- product discovery flow
 
-3. Right-click and select:
-   Open with Live Server
+## Project structure
+- app/demo-store/
+- app/widget/
+- src/theme/
 
-The application will open in the browser and connect to the configured Firebase services.
+## Run locally
+Open the storefront in a browser:
 
-## Technologies Used
-- HTML
-- CSS
-- JavaScript
-- Firebase Authentication
-- Firebase Realtime Database
-- Firebase Storage
-- Firebase Cloud Functions
-- TMDB API
+- app/demo-store/storefront.html
+
+This is a frontend prototype and does not require a backend or framework for the current demo.
 
 ## Notes
-- The Firebase backend is already configured.
-- Cloud Functions are already deployed.
+The current demo is designed to showcase a retailer-inspired product discovery experience with a floating wheel and expanded selection modal.
