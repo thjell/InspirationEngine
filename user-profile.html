@@ -1,0 +1,113 @@
+<!--Written by Tonje SA -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin The Wheel - profile</title>
+    <link rel="icon" href="images/wheel_clean_ui.png">
+
+    <!-- Fonts and CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/app.css" />
+
+    <!-- Connected scripts -->
+    <script type="module" src="authState.js"></script>  
+    <script type="module" src="components/header.js"></script>
+    <script type="module" src="/controller/profileController.js"></script>
+   
+</head>
+
+<!--Specifying the name of the body-->
+<body class="user-profile">  
+
+<!--Link to header--> 
+<app-header title="My account"></app-header>
+  
+<!--Starting main content -->
+<main>
+
+<!-- Layout-row for items -->
+<div class="layout-row">
+    <div id="profile-root">
+        <div id="profile-grid" class="profile-grid">
+
+            <!-- Left-column with filtercard for profile-picture -->
+            <div class="left-column">
+                <div class="filter-card-big"> 
+        
+                    <div class="profile-header">   
+                    <h2> My profile</h2> 
+
+                        <!--Section settings dropdown (written by Sander og TonjeH) -->
+                            <div class="settings-dropdown">
+                            <button class="settings-btn" id="settings-btn" 
+                            aria-label="Profile settings">
+                            ⚙
+                            </button>
+
+                                <div class="settings-menu" id="settings-menu">
+                                <label for="uploadPicture" 
+                                class="settings-item">
+                                Add profile picture
+                                </label>
+
+                                <button id="logoutButton" class="settings-item">
+                                Log out
+                                </button>
+
+                                <button id="delete-user-btn" 
+                                class="settings-item">
+                                Delete account
+                                </button>
+
+                                <input type="file" 
+                                id="uploadPicture" 
+                                class="upload-picture" 
+                                accept="image/*"/>
+                                </div>
+                            </div>
+                        </div>
+                    <img class="profile-picture-preview" style="max-width:160px; display:none;">
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <!-- Favorite dropzone container (written by Benjamin) -->
+    <div class="filter-card-big" id="favorite-dropzone">
+    <h2>My favorite movie</h2>
+        <div id="favorite-dropzone-container"></div>
+    </div>
+</div>
+
+
+<!--My list slider - header text -->
+<div class="slider-header-text">My list of movies
+</div>
+<!--My list slider elementes -->
+<div class="movie-slider-wrapper" id="movie-slider-wrapper">
+    <!--Left-button in the slider -->
+    <button class="slider-button button-left" id="slider-left-button"> &#10094; </button> 
+        <div class="movie-slider-view">
+            <!--Poster images in the slider -->
+            <div class="movie-slider" id="movie-slider">
+            </div> 
+        </div>
+    <!--Right-button in the slider -->
+    <button class="slider-button button-right" id="slider-right-button"> &#10095; </button>  
+</div>
+</main>
+
+<!-- Popups/modals -->
+<movie-info-modal></movie-info-modal> 
+<app-modal></app-modal>
+
+<!--Footer -->
+<script src="components/footer.js"></script> 
+<app-footer></app-footer>
+
+</body>
+</html>
