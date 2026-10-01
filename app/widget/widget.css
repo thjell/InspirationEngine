@@ -862,10 +862,200 @@
   align-items: center;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 900px) {
   .ie-widget-shell {
-    right: 12px;
-    bottom: 12px;
-    width: min(92vw, 340px);
+    transform: none;
+  }
+
+  .ie-widget-shell,
+  .ie-widget-shell * {
+    box-sizing: border-box;
+  }
+
+  .ie-widget-shell.expanded,
+  .ie-widget-shell.expanded.is-anchored {
+    width: 100%;
+    height: 100dvh;
+    padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    align-items: flex-start;
+    overflow: hidden;
+    scrollbar-gutter: auto;
+  }
+
+  .ie-widget-shell.expanded .ie-widget-card {
+    width: min(620px, 100%);
+    max-height: 100%;
+    margin: 0;
+    justify-content: flex-start;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    scrollbar-width: thin;
+  }
+
+  .ie-widget-shell.expanded.is-anchored .ie-widget-card {
+    margin: 0;
+  }
+
+  /* The existing fixed-body lock prevents page scrolling; allow sheet gestures. */
+  body.ie-modal-open {
+    touch-action: auto !important;
+  }
+
+  .ie-widget-shell.expanded .ie-widget-body,
+  .ie-widget-results {
+    width: 100%;
+    max-width: 560px;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .ie-widget-shell.collapsed {
+    inset: auto 0 0;
+    display: flex;
+    justify-content: center;
+    height: calc(124px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: #fffaf4;
+    border-top: 1px solid rgba(15, 23, 42, 0.1);
+    box-shadow: 0 -6px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  .ie-widget-shell.collapsed .ie-widget-wheel-wrap {
+    width: 180px;
+    height: 116px;
+  }
+
+  .ie-widget-shell.collapsed .ie-widget-wheel-label {
+    top: 14px;
+    width: 180px;
+    height: 98px;
+  }
+
+  .ie-widget-shell.collapsed .ie-widget-badge {
+    width: 76px;
+    height: 76px;
+    margin-top: 24px;
+    border-width: 3px;
+    box-shadow: 0 8px 16px rgba(15, 23, 42, 0.16);
+  }
+
+  .ie-widget-shell.expanded .ie-widget-card {
+    padding: 12px 16px 20px;
+    border-radius: 24px;
+  }
+
+  .ie-widget-shell.expanded .ie-widget-wheel-wrap {
+    width: 260px;
+    height: 200px;
+  }
+
+  .ie-widget-shell.expanded .ie-widget-wheel-label {
+    top: 20px;
+    width: 260px;
+    height: 142px;
+  }
+
+  .ie-widget-shell.expanded .ie-widget-wheel-label text {
+    font-size: 16px;
+    letter-spacing: 0.12em;
+  }
+
+  .ie-widget-shell.expanded .ie-widget-badge {
+    width: 150px;
+    height: 150px;
+    margin-top: 24px;
+  }
+
+  .ie-widget-shell.expanded .ie-interest-group,
+  .ie-widget-shell.expanded .ie-budget-group {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .ie-widget-shell.expanded .ie-widget-chip {
+    min-height: 44px;
+    padding: 8px;
+    font-size: 0.82rem;
+  }
+
+  .ie-widget-shell.expanded .ie-widget-chip-text {
+    white-space: normal;
+  }
+
+  .ie-widget-shell.expanded .ie-widget-cta {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 8px;
+  }
+
+  .ie-widget-shell.expanded .ie-widget-status {
+    height: auto;
+    min-height: 18px;
+    overflow-wrap: anywhere;
+  }
+
+  .ie-widget-result-featured {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .ie-widget-result-image {
+    object-fit: contain;
+  }
+
+  .ie-widget-result-copy,
+  .ie-widget-alt-copy {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ie-widget-result-actions {
+    flex-direction: column;
+  }
+
+  .ie-widget-result-link,
+  .ie-widget-reset-link {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .ie-widget-alternatives {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .ie-widget-shell.expanded,
+  .ie-widget-shell.expanded.is-anchored {
+    padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  }
+
+  .ie-widget-shell.expanded .ie-widget-card {
+    padding-inline: 12px;
+  }
+
+  .ie-widget-result-name {
+    font-size: 1.25rem;
+  }
+
+  .ie-widget-alternatives {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ie-widget-alt-card {
+    display: grid;
+    grid-template-columns: 80px minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .ie-widget-alt-card img {
+    height: 80px;
+    object-fit: contain;
+  }
+
+  .ie-widget-alt-name {
+    font-size: 0.82rem;
   }
 }

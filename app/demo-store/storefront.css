@@ -367,6 +367,11 @@ section {
 }
 
 @media (max-width: 900px) {
+  .topbar-nav {
+    flex-wrap: wrap;
+    gap: 10px 16px;
+  }
+
   .hero-card {
     grid-template-columns: 1fr;
   }
@@ -377,6 +382,23 @@ section {
 }
 
 @media (max-width: 600px) {
+  /* Reserve an actual viewport region for the dock, including while scrolling. */
+  body:has(.ie-widget-shell) {
+    overflow: hidden;
+  }
+
+  body:has(.ie-widget-shell) .storefront-shell {
+    min-height: 0;
+    height: calc(100dvh - 124px - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: 100px 16px;
+  }
+
+  body.ie-modal-open .storefront-shell {
+    overflow: hidden;
+  }
+
   .topbar-inner {
     min-height: 64px;
     flex-wrap: wrap;
@@ -393,5 +415,44 @@ section {
 
   .hero-copy {
     padding: 32px 22px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar-inner {
+    gap: 8px;
+  }
+
+  .topbar-actions {
+    gap: 6px;
+  }
+
+  .topbar-pill {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .hero {
+    padding-top: 20px;
+  }
+
+  .hero-visual {
+    padding: 20px 12px;
+  }
+
+  .device-card {
+    width: 94%;
+    padding: 14px;
+  }
+
+  .device-info,
+  .price-row {
+    flex-wrap: wrap;
+  }
+
+  .section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
   }
 }
